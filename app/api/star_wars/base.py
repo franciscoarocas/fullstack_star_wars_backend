@@ -7,10 +7,6 @@ class StarWarsAPIBase(ABC):
       self.api_url = api_url
 
   @abstractmethod
-  def filter_people(self, *args, **kwargs):
-    pass
-
-  @abstractmethod
   def parse_people_reponse_data(self, *args, **kwargs):
     pass
 
