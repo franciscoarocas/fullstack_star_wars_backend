@@ -5,19 +5,17 @@ from app.utils.sorting import sort as sort_func
 from app.utils.search import search as search_func
 from app.utils.pagination import paginate_func
 
-import os
-
 NUM_ITEM_PEOPLE = 15
 
-class PeopleService:
+class PlanetsService:
 
   def __init__(self) -> None:
     self.__api = get_star_wars_api_from_env()
 
-  async def get_people(self, page, search, sort, direction):
+  async def get_planets(self, page, search, sort, direction):
 
-    people_data = await self.__api.get_people()
+    planets_data = await self.__api.get_planets()
 
-    people_data = search_func(people_data, search)
-    people_data = sort_func(people_data, sort, direction)
-    return paginate_func(people_data, page, NUM_ITEM_PEOPLE)
+    planets_data = search_func(planets_data, search)
+    planets_data = sort_func(planets_data, sort, direction)
+    return paginate_func(planets_data, page, NUM_ITEM_PEOPLE)

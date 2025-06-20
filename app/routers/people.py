@@ -18,4 +18,3 @@ async def list_people(
 ):
     results = await svc.get_people(page, search, sort, dir)
     return results
-    #return PeopleService.from_results(results, page)

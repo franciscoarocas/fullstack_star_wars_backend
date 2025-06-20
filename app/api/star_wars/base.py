@@ -13,3 +13,11 @@ class StarWarsAPIBase(ABC):
   @abstractmethod
   async def get_people(self, *args, **kwargs):
     pass
+
+  @abstractmethod
+  def parse_planets_reponse_data(self, *args, **kwargs):
+    pass
+
+  @abstractmethod
+  async def get_planets(self, *args, **kwargs):
+    pass
