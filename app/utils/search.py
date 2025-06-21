@@ -1,11 +1,18 @@
 
-from typing import Optional
+from typing import Optional, List, Any
 
 from copy import deepcopy
 
 
 
-def search(data, search_value : Optional[str] = None):
+def search(data : List[Any], search_value : Optional[str] = None) -> List[Any]:
+  """
+  Searches for items in a list of dictionaries based on a search value.
+    :param data: The list of dictionaries to search through.
+    :param search_value: The value to search for in the 'name' field of each dictionary.
+    :return: A list of dictionaries that match the search criteria.
+    :raises ValueError: If the search value is empty or None.
+  """
 
   data = deepcopy(data)
 

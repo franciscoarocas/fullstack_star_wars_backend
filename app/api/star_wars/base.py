@@ -7,7 +7,7 @@ class StarWarsAPIBase(ABC):
       self.api_url = api_url
 
   @abstractmethod
-  def parse_people_reponse_data(self, *args, **kwargs):
+  def parse_people_response_data(self, *args, **kwargs):
     pass
 
   @abstractmethod
@@ -15,7 +15,7 @@ class StarWarsAPIBase(ABC):
     pass
 
   @abstractmethod
-  def parse_planets_reponse_data(self, *args, **kwargs):
+  def parse_planets_response_data(self, *args, **kwargs):
     pass
 
   @abstractmethod

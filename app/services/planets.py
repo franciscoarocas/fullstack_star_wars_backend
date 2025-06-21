@@ -5,7 +5,7 @@ from app.utils.sorting import sort as sort_func
 from app.utils.search import search as search_func
 from app.utils.pagination import paginate_func
 
-NUM_ITEM_PEOPLE = 15
+from app.constants import NUM_ITEMS_TABLE_PAGE
 
 class PlanetsService:
 
@@ -18,4 +18,4 @@ class PlanetsService:
 
     planets_data = search_func(planets_data, search)
     planets_data = sort_func(planets_data, sort, direction)
-    return paginate_func(planets_data, page, NUM_ITEM_PEOPLE)
+    return paginate_func(planets_data, page, NUM_ITEMS_TABLE_PAGE)

@@ -1,16 +1,33 @@
 
-from typing import Optional
+from typing import Optional, List, Any, Callable, Dict
 from copy import deepcopy
+
+from fastapi import HTTPException
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class SortStrategy():
 
-  def __init__(self, field : str, sort_func : callable):
+  def __init__(self, field : str, sort_func : Callable) -> None:
+    """
+      SortStrategy class to encapsulate sorting logic.
+        :param field: The field to sort by.
+        :param sort_func: A callable function that defines the sorting logic.
+    """
     self.field = field
     self.__sort_func = sort_func
 
 
-  def sort(self, data, direction: str = "asc"):
+  def sort(self, data : List[Any], direction: str = "asc") -> List[Any]:
+    """
+      Sorts the data based on the defined field and direction.
+        :param data: The list of data to sort.
+        :param direction: The direction of sorting, either 'asc' or 'desc'.
+        :return: A sorted list of data.
+    """
 
     if direction not in ["asc", "desc"]:
         raise ValueError("Direction must be 'asc' or 'desc'")
@@ -20,13 +37,21 @@ class SortStrategy():
     return sorted(data, key=self.__sort_func, reverse=reverse)
 
 
-SORT_STRATEGIES = {
+SORT_STRATEGIES : Dict[str, SortStrategy] = {
     "name": SortStrategy("name", lambda p: p['name'].lower()),
     "created": SortStrategy("created", lambda p: p['created']),
 }
 
 
-def sort(data, sort_by : Optional[str] = None, direction : Optional[str] = 'asc'):
+def sort(data : List[Any], sort_by : Optional[str] = None, direction : Optional[str] = 'asc') -> List[Any]:
+  """
+  Sorts a list of data based on the specified field and direction.
+    :param data: The list of data to sort.
+    :param sort_by: The field to sort by (e.g., 'name', 'created').
+    :param direction: The direction of sorting, either 'asc' or 'desc'.
+    :return: A sorted list of data.
+    :raises HTTPException: If the sort strategy is not found.
+  """
 
   data = deepcopy(data)
 
@@ -39,7 +64,10 @@ def sort(data, sort_by : Optional[str] = None, direction : Optional[str] = 'asc'
     direction = 'asc'
 
   if not sort_strategy:
-    # TODO: Hacer un logger de error
-    return data
+    logger.error(f"Sort strategy '{sort_by}' not found")
+    raise HTTPException(
+        status_code=500,
+        detail=f"Sort mode '{sort_by}' not found"
+    )
 
   return sort_strategy.sort(data, direction)

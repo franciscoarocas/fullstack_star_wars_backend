@@ -1,7 +1,14 @@
 
 from app.api.star_wars.base import StarWarsAPIBase
 
+from fastapi import HTTPException
+
 import os
+
+import logging
+
+
+logger = logging.getLogger(__name__)
 
 
 def stars_wars_api_builder(api_name : str) -> StarWarsAPIBase:
@@ -17,8 +24,12 @@ def stars_wars_api_builder(api_name : str) -> StarWarsAPIBase:
         from app.api.star_wars.swapi import Swapi
         return Swapi()
 
-    # TODO: Esto va para el logger
-    raise ValueError(f"Unknown API name: {api_name}")
+    logger.critical(f"Unknown API name: {api_name}")
+
+    raise HTTPException(
+        status_code=503,
+        detail="Resource temporarily unavailable. Please try again later."
+    )
 
 
 
@@ -32,6 +43,6 @@ def get_star_wars_api_from_env() -> StarWarsAPIBase:
     api_name = os.getenv("STAR_WARS_API", "swapi")
 
     if not api_name:
-        pass # TODO: Log this error
+        logger.error("STAR_WARS_API environment variable is not set.")
 
     return stars_wars_api_builder(api_name)

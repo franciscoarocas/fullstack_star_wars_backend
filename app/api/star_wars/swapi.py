@@ -3,7 +3,7 @@ from app.api.star_wars.base import StarWarsAPIBase
 
 from fastapi import HTTPException
 
-from cachetools import TTLCache, cached
+from cachetools import TTLCache
 
 import httpx
 
