@@ -2,3 +2,6 @@
 [report]
 exclude_lines =
     ^\s*@abstractmethod
+
+[coverage:run]
+concurrency = thread

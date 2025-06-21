@@ -29,7 +29,6 @@ class Swapi(StarWarsAPIBase):
     def parse_people_response_data(self, data):
         return data
 
-
     async def get_people(self):
         """
             Fetches people from the SWAPI.
