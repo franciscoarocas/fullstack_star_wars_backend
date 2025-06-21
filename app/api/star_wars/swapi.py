@@ -1,4 +1,6 @@
 
+from typing import Callable
+
 from app.api.star_wars.base import StarWarsAPIBase
 
 from fastapi import HTTPException
@@ -27,50 +29,45 @@ class Swapi(StarWarsAPIBase):
     def parse_people_response_data(self, data):
         return data
 
-    async def get_people(self, *args, **kwargs):
+
+    async def get_people(self):
         """
-        Fetches people from the SWAPI.
+            Fetches people from the SWAPI.
         """
 
-        if 'people' in cache:
-            return cache['people']
-
-        try:
-          async with httpx.AsyncClient() as client:
-              response = await client.get(f"{self.api_url}/people")
-              response.raise_for_status()
-              parsed_people = self.parse_people_response_data(response.json())
-              cache["people"] = parsed_people
-              return parsed_people
-        except httpx.HTTPStatusError as e:
-            logger.error(f"Error fetching people API: {e}")
-            raise HTTPException(
-                status_code=503,
-                detail="Resource temporarily unavailable. Please try again later."
-            )
-
+        return self.get_api_data('people', self.parse_people_response_data)
 
     def parse_planets_response_data(self, data):
         return data
 
 
-    async def get_planets(self, *args, **kwargs):
+    async def get_planets(self):
         """
-        Fetches planets from the SWAPI.
+            Fetches planets from the SWAPI.
         """
 
-        if 'planets' in cache:
-            return cache['planets']
+        return self.get_api_data('planets', self.parse_planets_response_data)
+
+
+    def get_api_data(self, name : str, parse_func : Callable):
+        """
+        Generic method to fetch data from the SWAPI.
+        :param name: The name of the resource (e.g., 'people', 'planets').
+        :param parse_func: Function to parse the response data.
+        :return: Parsed data from the API.
+        """
+        if name in cache:
+            return cache[name]
 
         try:
-          async with httpx.AsyncClient() as client:
-              response = await client.get(f"{self.api_url}/planets")
-              response.raise_for_status()
-              parsed_planets = self.parse_planets_response_data(response.json())
-              cache["planets"] = parsed_planets
-              return parsed_planets
+            with httpx.Client() as client:
+                response = client.get(f"{self.api_url}/{name}")
+                response.raise_for_status()
+                parsed_data = parse_func(response.json())
+                cache[name] = parsed_data
+                return parsed_data
         except httpx.HTTPStatusError as e:
-            logger.error(f"Error fetching planets API: {e}")
+            logger.error(f"Error fetching {name} API: {e}")
             raise HTTPException(
                 status_code=503,
                 detail="Resource temporarily unavailable. Please try again later."
