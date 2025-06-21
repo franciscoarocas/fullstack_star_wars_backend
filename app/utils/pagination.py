@@ -3,7 +3,7 @@ from typing import List, Any
 
 from fastapi_pagination import Params, paginate
 
-def paginate_func(data : List[Any], page : int, num_item_per_page : int) -> List[Any]:
+def paginate_func(data : List[Any], page : int, num_item_per_page : int) -> Any:
   """
   Paginates a list of data based on the specified page number and number of items per page.
     :param data: The list of data to paginate.

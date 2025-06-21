@@ -5,6 +5,7 @@ from copy import deepcopy
 from fastapi import HTTPException
 
 import logging
+from http import HTTPStatus
 
 logger = logging.getLogger(__name__)
 
@@ -28,9 +29,11 @@ class SortStrategy():
         :param direction: The direction of sorting, either 'asc' or 'desc'.
         :return: A sorted list of data.
     """
-
-    if direction not in ["asc", "desc"]:
-        raise ValueError("Direction must be 'asc' or 'desc'")
+    if direction not in ("asc", "desc"):
+      raise HTTPException(
+        status_code=HTTPStatus.BAD_REQUEST,
+        detail="Direction must be 'asc' or 'desc'"
+      )
 
     reverse = direction == "desc"
 
@@ -66,7 +69,7 @@ def sort(data : List[Any], sort_by : Optional[str] = None, direction : Optional[
   if not sort_strategy:
     logger.error(f"Sort strategy '{sort_by}' not found")
     raise HTTPException(
-        status_code=500,
+        status_code=HTTPStatus.BAD_REQUEST,
         detail=f"Sort mode '{sort_by}' not found"
     )
 

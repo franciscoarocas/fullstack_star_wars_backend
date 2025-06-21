@@ -1,0 +1,4 @@
+# .coveragerc
+[report]
+exclude_lines =
+    ^\s*@abstractmethod

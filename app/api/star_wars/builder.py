@@ -43,6 +43,6 @@ def get_star_wars_api_from_env() -> StarWarsAPIBase:
     api_name = os.getenv("STAR_WARS_API", "swapi")
 
     if not api_name:
-        logger.error("STAR_WARS_API environment variable is not set.")
+        logger.warning("STAR_WARS_API environment variable is not set.")
 
     return stars_wars_api_builder(api_name)
