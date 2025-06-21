@@ -2,13 +2,12 @@
 from typing import List
 
 from fastapi import APIRouter, Query, Depends
-from app.schemas.planets import Planet
-from app.schemas.people import People
+from app.schemas.planets import PlanetResponse
 from app.services.planets import PlanetsService
 
 router = APIRouter()
 
-@router.get("/planets/") # response_model=List[Planet]
+@router.get("/planets/", response_model=PlanetResponse)
 async def list_planets(
     page: int = Query(1, ge=1),
     search: str | None = Query(None),
