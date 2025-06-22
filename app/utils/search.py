@@ -3,6 +3,7 @@ from typing import Optional, List, Any
 
 from copy import deepcopy
 
+import logging
 
 
 def search(data : List[Any], search_value : Optional[str] = None) -> List[Any]:
@@ -18,6 +19,8 @@ def search(data : List[Any], search_value : Optional[str] = None) -> List[Any]:
 
   if not search_value or search_value == "":
     return deepcopy(data)
+
+  logging.info(f"Searching for '{search_value}' in data.")
 
   search_value = search_value.lower().strip()
 

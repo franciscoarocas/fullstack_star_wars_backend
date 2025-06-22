@@ -61,6 +61,8 @@ def sort(data : List[Any], sort_by : Optional[str] = None, direction : Optional[
   if not sort_by:
     return data
 
+  logger.info(f"Sorting data by '{sort_by}' in direction '{direction}'")
+
   sort_strategy = SORT_STRATEGIES.get(sort_by, None)
 
   if not direction:
