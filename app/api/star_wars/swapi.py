@@ -50,11 +50,14 @@ class Swapi(StarWarsAPIBase):
 
     def get_api_data(self, name : str, parse_func : Callable):
         """
-        Generic method to fetch data from the SWAPI.
-        :param name: The name of the resource (e.g., 'people', 'planets').
-        :param parse_func: Function to parse the response data.
-        :return: Parsed data from the API.
-        """
+            Fetches data from the SWAPI and caches it.
+            If the data is already cached, it returns the cached data.
+            Args:
+                name (str): The name of the resource (e.g., 'people', 'planets').
+                parse_func (Callable): Function to parse the response data.
+            Returns:
+                Any: Parsed data from the API.
+            """
         if name in cache:
             return cache[name]
 
