@@ -1,5 +1,5 @@
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, field_serializer
 
 from typing import Optional, Union
 
@@ -17,10 +17,11 @@ class People(BaseModel):
   created    : datetime
   edited     : datetime
 
-  class Config:
-      json_encoders = {
-          datetime: lambda v: v.strftime("%d-%m-%Y %H:%M:%S")
-      }
+  model_config = ConfigDict()
+
+  @field_serializer("created", "edited", return_type=str)
+  def serialize_datetimes(self, dt: datetime) -> str:
+      return dt.strftime("%d-%m-%Y %H:%M:%S")
 
 
 class PeopleResponse(BaseModel):

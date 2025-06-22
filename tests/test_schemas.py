@@ -14,7 +14,9 @@ def build_fake_people_data() -> Dict[str, str]:
         "skin_color": "fair",
         "eye_color": "blue",
         "birth_year": "19BBY",
-        "gender": "male"
+        "gender": "male",
+        "created": "2023-10-01T12:00:00Z",
+        "edited": "2023-10-01T12:00:00Z"
     }
 
 
@@ -30,3 +32,5 @@ def test_people_schema():
     assert people.eye_color == "blue"
     assert people.birth_year == "19BBY"
     assert people.gender == "male"
+    assert people.created.strftime("%Y-%m-%dT%H:%M:%SZ") == "2023-10-01T12:00:00Z"
+    assert people.edited.strftime("%Y-%m-%dT%H:%M:%SZ") == "2023-10-01T12:00:00Z"
