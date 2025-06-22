@@ -29,5 +29,10 @@ for router in all_routes:
     app.include_router(router)
 
 if __name__ == "__main__":
+
+    host = os.getenv("HOST", None)
+    port = int(os.getenv("PORT", 80))
+    reload = os.getenv("RELOAD", "false").lower() == "true"
+
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host=host, port=port, reload=reload)
