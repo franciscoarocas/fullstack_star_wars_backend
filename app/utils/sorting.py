@@ -22,22 +22,14 @@ class SortStrategy():
     self.__sort_func = sort_func
 
 
-  def sort(self, data : List[Any], direction: str = "asc") -> List[Any]:
+  def sort(self, data : List[Any]) -> List[Any]:
     """
       Sorts the data based on the defined field and direction.
         :param data: The list of data to sort.
-        :param direction: The direction of sorting, either 'asc' or 'desc'.
         :return: A sorted list of data.
     """
-    if direction not in ("asc", "desc"):
-      raise HTTPException(
-        status_code=HTTPStatus.BAD_REQUEST,
-        detail="Direction must be 'asc' or 'desc'"
-      )
 
-    reverse = direction == "desc"
-
-    return sorted(data, key=self.__sort_func, reverse=reverse)
+    return sorted(data, key=self.__sort_func)
 
 
 SORT_STRATEGIES : Dict[str, SortStrategy] = {
@@ -46,7 +38,7 @@ SORT_STRATEGIES : Dict[str, SortStrategy] = {
 }
 
 
-def sort(data : List[Any], sort_by : Optional[str] = None, direction : Optional[str] = 'asc') -> List[Any]:
+def sort(data : List[Any], sort_by : Optional[str] = None) -> List[Any]:
   """
   Sorts a list of data based on the specified field and direction.
     :param data: The list of data to sort.
@@ -63,9 +55,6 @@ def sort(data : List[Any], sort_by : Optional[str] = None, direction : Optional[
 
   sort_strategy = SORT_STRATEGIES.get(sort_by, None)
 
-  if not direction:
-    direction = 'asc'
-
   if not sort_strategy:
     logger.error(f"Sort strategy '{sort_by}' not found")
     raise HTTPException(
@@ -73,4 +62,4 @@ def sort(data : List[Any], sort_by : Optional[str] = None, direction : Optional[
         detail=f"Sort mode '{sort_by}' not found"
     )
 
-  return sort_strategy.sort(data, direction)
+  return sort_strategy.sort(data)
