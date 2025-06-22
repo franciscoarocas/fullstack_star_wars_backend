@@ -3,6 +3,8 @@ from pydantic import BaseModel
 
 from typing import Optional, Union
 
+from datetime import datetime
+
 class People(BaseModel):
   name       : str
   height     : Optional[Union[int | str]] # Height can be a string like "unknown"
@@ -12,6 +14,13 @@ class People(BaseModel):
   eye_color  : Optional[str]
   birth_year : Optional[str]
   gender     : Optional[str]
+  created    : datetime
+  edited     : datetime
+
+  class Config:
+      json_encoders = {
+          datetime: lambda v: v.strftime("%d-%m-%Y %H:%M:%S")
+      }
 
 
 class PeopleResponse(BaseModel):
