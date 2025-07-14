@@ -30,16 +30,24 @@ async def test_people_endpoint(mock_get):
 
 
 @pytest.mark.asyncio
-@patch("app.api.star_wars.swapi.httpx.Client.get", new_callable=MagicMock)
-async def test_planets_endpoint(mock_get):
+async def test_planets_endpoint(monkeypatch):
+    fake_data = build_fake_swapi_planets_data()
 
-    mock_get.side_effect = build_fake_response(build_fake_swapi_planets_data())
+    async def fake_get(self, url, *args, **kwargs) -> httpx.Response:
+        return httpx.Response(status_code=200, json=fake_data)
+
+    monkeypatch.setattr(
+        "app.api.star_wars.swapi.httpx.AsyncClient.get",
+        fake_get,
+        raising=True,
+    )
 
     transport = httpx.ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as ac:
         res = await ac.get("/planets/")
 
     assert res.status_code == status.HTTP_200_OK
+    assert res.json() == fake_data
 
 
 @pytest.mark.asyncio

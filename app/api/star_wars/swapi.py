@@ -2,18 +2,21 @@
 from typing import Callable
 
 from app.api.star_wars.base import StarWarsAPIBase
+from app.utils.cache import (
+    get_cache,
+    set_cache,
+    is_in_cache
+)
 
 from fastapi import HTTPException
-
-from cachetools import TTLCache
 
 import httpx
 
 import logging
 
+
 logger = logging.getLogger(__name__)
 
-cache = TTLCache(maxsize=1024, ttl=60)
 
 class Swapi(StarWarsAPIBase):
     """
@@ -34,7 +37,7 @@ class Swapi(StarWarsAPIBase):
             Fetches people from the SWAPI.
         """
 
-        return self.get_api_data('people', self.parse_people_response_data)
+        return await self.get_api_data('people', self.parse_people_response_data)
 
     def parse_planets_response_data(self, data):
         return data
@@ -45,10 +48,10 @@ class Swapi(StarWarsAPIBase):
             Fetches planets from the SWAPI.
         """
 
-        return self.get_api_data('planets', self.parse_planets_response_data)
+        return await self.get_api_data('planets', self.parse_planets_response_data)
 
 
-    def get_api_data(self, name : str, parse_func : Callable):
+    async def get_api_data(self, name : str, parse_func : Callable):
         """
             Fetches data from the SWAPI and caches it.
             If the data is already cached, it returns the cached data.
@@ -58,15 +61,15 @@ class Swapi(StarWarsAPIBase):
             Returns:
                 Any: Parsed data from the API.
             """
-        if name in cache:
-            return cache[name]
+        if await is_in_cache(name):
+            return await get_cache(name)
 
         try:
-            with httpx.Client() as client:
-                response = client.get(f"{self.api_url}/{name}")
+            async with httpx.AsyncClient() as client:
+                response = await client.get(f"{self.api_url}/{name}")
                 response.raise_for_status()
                 parsed_data = parse_func(response.json())
-                cache[name] = parsed_data
+                await set_cache(name, parsed_data)
                 return parsed_data
         except httpx.HTTPStatusError as e:
             logger.error(f"Error fetching {name} API: {e}")
